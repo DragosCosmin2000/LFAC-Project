@@ -1,0 +1,61 @@
+const int @a;
+const string @b := ''ana are mere'';
+char @c := 't';
+int @x := 10, @y := 11;
+string @stringda1;
+int @v[20];
+
+int @funct1(int @x, int @y){
+    int @S := 0;
+    If(@x < @y){
+        int @a := @S;
+        @v[4] := 5;
+        @v[5] := @a;
+    };
+    For (@i := @v[4] ; @i < @b ; @i := @i + 1){
+        int @a := @b;
+        If(@x < @y){
+            int @a := @S;
+            @v[4] := 5;
+            @v[5] := @a;
+        };
+    };
+    While(@a < 4){
+        int @a := @b;
+        @abc := ''afara este frumos'';
+    };
+    @Classsa @new_clasa := new @Classsa;
+};
+int @abC(){
+    float @nr;
+};
+class @da {
+    private:
+        int @a;
+        string @da(int @x,int @y);
+        int @cev(){
+            float @nr;
+        };
+    public:
+        int @a;
+        string @da(int @x,int @y);
+        int @abC(){
+            float @nr;
+            @a.length();
+        };
+};
+begin_progr
+    @x := @y;
+    @x := @x;
+    For ( @s := @v[4] ; @s < @b ; @s := @s + 1){
+        int @a := @b;
+    };
+    int @x := 10;
+    int @x := @b;
+    @asd(10,20);
+    @abd(@a*@y+@b*3+200-2, 15, @func(@a,@b));
+    @y := @a + @b;
+    @a.to_upper();
+    @a.to_lower();
+    @a.length();
+end_progr
