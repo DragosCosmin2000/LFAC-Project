@@ -25,11 +25,11 @@ void yyerror(const char* error_message);
 %token EVAL ASSIGN TOUPPER TOLOWER LENGTH BGIN END PRV PUB NEW CLASS IF WHILE FOR
 %token<const_flag> CONST
 %type<intval> eval_exp calculate
-%token GT LT EQ LET GET
+%token GT LT EQ LET GET AND OR
 
-%left AND OR
 %left '+' '-'
 %left '*' '/' '%'
+%left AND OR
 
 %start progr
 %%
@@ -90,6 +90,7 @@ decl_for : FOR '(' ID ASSIGN ID ';' expr_bool ';' expresie ')' '{' list '}' ;
 
 semne : GT | LT | EQ | LET | GET ;
 
+//operatori_logici : AND | OR ;
 
 expr_bool : '(' expr_bool ')'
           | expr_bool AND expr_bool

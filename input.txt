@@ -1,4 +1,4 @@
-cinteger a:=3;
+integer a:=3;
 char function(string a,float b){
     integer b;
     float a:= "dadada";
@@ -22,7 +22,7 @@ main(){
     Eval( 5 + 6 + 7 * 5 - 12 ) ;
     b:= 9 + 4 + funct(da);
     Clasa cls1 := new Clasa[5];
-    if( (a <= 5 || 6 > 2) && 2 < 3)
+    if( (a <= 5 || 6 > 2) && func(20) < 3 * 90 + a[20] - 30 )
     {
         a := 2;
     };
