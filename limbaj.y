@@ -1,142 +1,188 @@
 %{
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include "limbaj.h"
 extern FILE* yyin;
 extern FILE* yyout;
 extern char* yytext;
 extern int yylineno;
-void printIn_symbol(char* value);
+extern unsigned program_status;
+int yylex();
+void yyerror(const char* error_message);
 %}
-%union {
-int intval;
-char* strval;
+%union{
+   char* strval;
+   char* type;
+   int intval;
+   int const_flag;
+   float floatval;
 }
-%token <strval>NR
-%token <strval>STRING
-%token <strval>TIP
-%token <strval>CHAR
-%token <strval>ID
-%token BGIN END ASSIGN CLS PRV PUB WHILE FOR IF SIGNS SEMNE NEW CONST TOUPPER TOLOWER LENGTH
+%token<intval> NR
+%token<floatval> NRFLOAT
+%token<strval> ID STRINGS CHARS
+%token<type> INT FLOAT BOOL STRING CHAR
+%token EVAL ASSIGN TOUPPER TOLOWER LENGTH BGIN END PRV PUB NEW CLASS IF WHILE FOR
+%token<const_flag> CONST
+%type<intval> eval_exp calculate
+%token GT LT EQ LET GET
+
+%left AND OR
+%left '+' '-'
+%left '*' '/' '%'
+
 %start progr
 %%
-progr: declaratii bloc {printf("program corect sintactic\n");}
+
+progr : declaratii bloc {printf("Corect.\n");}
+      ;
+      
+declaratii : declaratie ';'
+           | declaratii declaratie ';'
+           ;
+
+declaratie : statements
+           | decl_clase
+           | decl_functii
+           ;
+
+decl_clase : CLASS ID '{' continut_clasa '}' ;
+
+continut_clasa : PRV ':' declaratii
+               | PUB ':' declaratii
+               | PRV ':' declaratii PUB ':' declaratii
+               ;
+
+apelare_functii : ID '(' parametrii_call ')'
+                | ID '(' ')'
+                ;
+
+creare_obiect : ID ID ASSIGN NEW ID'['NR']' 
+              | ID ID ASSIGN NEW ID'['']' 
+              | ID ID ASSIGN NEW ID 
+              ;
+
+parametrii_call : param_call ',' parametrii_call
+                | param_call
+                ;
+                
+param_call : expresie
+           | expresie_string
+           ;
+
+tip : INT | FLOAT | BOOL | STRING | CHAR ;
+
+decl_variabile : tip ID
+               | tip ID ASSIGN expresie
+               | tip ID ASSIGN expresie_string
+               | tip ID '[' NR ']'
+               ;
+
+decl_const : CONST tip ID ASSIGN NR
+           | CONST tip ID ASSIGN STRING
+           ;
+           
+decl_if : IF '(' expr_bool ')' '{' list'}' ;
+
+decl_while : WHILE '(' expr_bool ')' '{' list '}' ;
+
+decl_for : FOR '(' ID ASSIGN ID ';' expr_bool ';' expresie ')' '{' list '}' ;
+
+semne : GT | LT | EQ | LET | GET ;
+
+
+expr_bool : '(' expr_bool ')'
+          | expr_bool AND expr_bool
+          | expr_bool OR expr_bool
+          | expresie semne expresie
+          ;
+
+decl_functii : tip ID '(' parametrii ')' '{' list '}'
+             | tip ID '(' ')' '{' list '}'
+             ;
+
+parametrii : param ',' parametrii
+           | param
+           ;
+
+param : tip ID
+      | tip ID'['']'
+      ;
+
+expresie : expresie '+' expresie
+         | expresie '-' expresie
+         | expresie '*' expresie
+         | expresie '/' expresie
+         | expresie '%' expresie
+         | '(' expresie ')'
+         | VAL
+         | ID
+         | ID '[' NR ']'
+         | LENGTH '(' ID ')'
+         | apelare_functii
+         ;
+
+VAL : NR
+    | NRFLOAT
+    | CHARS
+    ;
+
+expresie_string : expresie_string '+' expresie_string
+                | '(' expresie_string ')'
+                | STRINGS
+                | TOUPPER '(' ID ')'
+                | TOLOWER '(' ID ')'
+                ;
+
+list : statements ';'
+     | list statements ';'
      ;
 
-declaratii : declaratie_var ';'
-           | declaratie_fun ';'
-	         | declaratii declaratie_var ';'
-           | declaratii declaratie_fun ';'
-	      ;
-declaratii_faraFunctii : declaratie_var ';'
-                       | declaratii_faraFunctii declaratie_var ';'
-                   ;
-declaratie_var : TIP decl
-               | TIP ID {char *s; strcpy(s, $1); strcat(s, " "); strcat(s, $2); printIn_symbol(s);}
-               | CONST TIP ID
-               | CONST TIP decl
-               | asign_vector
-               | TIP decl_vectori
-               | if_stmt
-               | while_stmt
-               | for_stmt
-               | operatii_clase
-               | operatii_string
-               | ID ASSIGN expresie
-               ;
-declaratie_fun : TIP functii
-               | clase
-               ;
-decl_vectori : ID'[' NR ']'
-             | ID'[' NR ']' ASSIGN NR
-             ;
-asign_vector : ID'[' NR ']' ASSIGN NR
-             | ID'[' NR ']' ASSIGN ID
-             | ID'[' NR ']'
-             ;
-lista_param : param
-            | lista_param ','  param
-            ;
-functii : ID '(' lista_param ')' '{' declaratii_faraFunctii '}'
-        | ID '(' ')' '{' declaratii_faraFunctii '}'
-        | ID '(' lista_param ')'
-        | ID '(' ')'
-        ;
-value : NR
-      | NR '.' NR
-      | CHAR
-      | STRING
-      ;
-decl : ID ASSIGN value
-     | ID ASSIGN ID
-     | decl ',' ID
-     | decl ',' ID ASSIGN value
-     ;
-if_stmt : IF '(' vars SIGNS vars ')' '{' declaratii_faraFunctii '}'
-        ;
-while_stmt : WHILE '(' vars SIGNS vars ')' '{' declaratii_faraFunctii '}'
+statements : decl_variabile
+           | apelare_functii
+           | creare_obiect
+           | ID ASSIGN expresie
+           | ID ASSIGN expresie_string
+           | decl_const
+           | decl_for
+           | decl_if
+           | decl_while
+           | calculate
            ;
-vars: value | ID | asign_vector;
-for_stmt : FOR '(' ID ASSIGN vars ';' ID SIGNS vars ';' ID ASSIGN ID SEMNE vars ')' '{' declaratii_faraFunctii '}'
-         ;
-param : TIP ID
-      ;
-clase : CLS ID '{' pozitii '}'
-      ;
-pozitii : PRV ':' declaratii PUB ':' declaratii
-        | PRV ':' declaratii
-        | PUB ':' declaratii
-        ;
-operatii_clase : ID ID ASSIGN NEW ID '[' NR ']'
-               | ID ID ASSIGN NEW ID
-               ;
-operatii_string : ID'.'TOUPPER
-                | ID'.'TOLOWER
-                | ID'.'LENGTH
-                ;
-/* bloc */
+
 bloc : BGIN list END
      ;
 
-/* lista instructiuni */
-list :  statement ';'
-     | list statement ';'
-     ;
+calculate : EVAL '(' eval_exp ')' {printf("Valoare: %i\n", $3);}
+          ;
 
-/* instructiune */
-statement: declaratie_var
-         | ID '(' lista_apel ')'
+eval_exp : eval_exp '+' eval_exp {$$ = $1 + $3;}
+         | eval_exp '-' eval_exp {$$ = $1 - $3;}
+         | eval_exp '*' eval_exp {$$ = $1 * $3;}
+         | eval_exp '/' eval_exp {$$ = $1 / $3;}
+         | eval_exp '%' eval_exp {$$ = $1 % $3;}
+         | '(' eval_exp ')' {$$ = $2;}
+         | '-' eval_exp {$$ = -$2;}
+         | NR {$$ = $1;}
+         | ID {;}
+         | ID '[' NR ']' {;}
          ;
-expresie : '(' expresie ')'
-         | expresie SEMNE expresie
-         | value
-         | ID
-         ;
-lista_apel : expresie
-           | ID '(' lista_apel ')'
-           | lista_apel ',' expresie
-           | lista_apel ',' ID '(' lista_apel ')'
-           ;
+
+
 %%
 
-void printIn_symbol(char* value)
+void yyerror(const char* error_message)
 {
-   FILE* symb = fopen("symbol_table.txt", "a");
-   strcat(value, "\n");
-   fprintf(symb, value);
-   fclose(symb);
-}
-
-void yyerror(char * s){
-  printf("eroare: %s la linia:%d\n",s,yylineno);
+   printf("Line %d: %s\n", yylineno, error_message);
 }
 
 int main(int argc, char** argv){
-// Stergem symbol_table.txt
-if(remove("symbol_table.txt") == 0)
-  printf("symbol_table.txt a fost sters cu succes\n");
-else
-  printf("eroare la stergere symbol_table.txt. Posibil ca fisierul sa nu fi existat!\n");
-yyin=fopen(argv[1],"r");
-yyparse();
-fclose(yyin);
+   // Input file
+   yyin=fopen(argv[1],"r");
+   // Tables configuration
+   tables_config();
+   
+   yyparse();
+   print_results();
+   fclose(yyin);
 }
