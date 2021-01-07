@@ -1,61 +1,29 @@
-const int @a;
-const string @b := ''ana are mere'';
-char @c := 't';
-int @x := 10, @y := 11;
-string @stringda1;
-int @v[20];
-
-int @funct1(int @x, int @y){
-    int @S := 0;
-    If(@x < @y){
-        int @a := @S;
-        @v[4] := 5;
-        @v[5] := @a;
-    };
-    For (@i := @v[4] ; @i < @b ; @i := @i + 1){
-        int @a := @b;
-        If(@x < @y){
-            int @a := @S;
-            @v[4] := 5;
-            @v[5] := @a;
-        };
-    };
-    While(@a < 4){
-        int @a := @b;
-        @abc := ''afara este frumos'';
-    };
-    @Classsa @new_clasa := new @Classsa;
+cinteger a:=3;
+char function(string a,float b){
+    integer b;
+    float a:= "dadada";
+    func();
+    Eval( 5 + 6 + 7 ) ;
 };
-int @abC(){
-    float @nr;
-};
-class @da {
-    private:
-        int @a;
-        string @da(int @x,int @y);
-        int @cev(){
-            float @nr;
+class Clasa {
+    private : 
+        char function(string a,float b){
+            integer b;
+            float a:=b;
         };
-    public:
-        int @a;
-        string @da(int @x,int @y);
-        int @abC(){
-            float @nr;
-            @a.length();
-        };
+        integer b;
 };
-begin_progr
-    @x := @y;
-    @x := @x;
-    For ( @s := @v[4] ; @s < @b ; @s := @s + 1){
-        int @a := @b;
+integer b[100];
+main(){
+    x := y;
+    x := x;
+    asdf(23);
+    function(funct(),2);
+    Eval( 5 + 6 + 7 * 5 - 12 ) ;
+    b:= 9 + 4 + funct(da);
+    Clasa cls1 := new Clasa[5];
+    if( (a <= 5 || 6 > 2) && 2 < 3)
+    {
+        a := 2;
     };
-    int @x := 10;
-    int @x := @b;
-    @asd(10,20);
-    @abd(@a*@y+@b*3+200-2, 15, @func(@a,@b));
-    @y := @a + @b;
-    @a.to_upper();
-    @a.to_lower();
-    @a.length();
-end_progr
+end}
