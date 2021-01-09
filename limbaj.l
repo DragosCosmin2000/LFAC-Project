@@ -29,6 +29,7 @@
 ">=" {return GET;}
 "&&" {return AND;}
 "||" {return OR;}
+"!" {return NOT;}
 ":=" {return ASSIGN;}
 
 "while" {return WHILE;}

@@ -38,7 +38,7 @@ void yyerror(const char* error_message);
 %type<strval> parametrii param
 %type<type> tip
 
-%left AND OR
+%left AND OR NOT
 %left '+' '-'
 %left '*' '/' '%'
 
@@ -59,6 +59,15 @@ declaratie : statements
 
 decl_clase : CLASS ID '{'
             {locatie=1;}
+            {
+               //Clase
+               if(cClas($2)==1)
+                  pushClas($2);
+               else{
+                  program_status=0;
+                  printf("Linia %d: Clase %s exista deja.\n", yylineno, $2);
+               }
+            }
             {
             	// Variabile
             	var_scope++;
@@ -85,8 +94,26 @@ apelare_functii : ID '(' parametrii_call ')'
                 ;
 
 creare_obiect : ID ID ASSIGN NEW ID'['NR']'
+              {
+                if(cObj($1)==1)
+                  addObjects($1,$2);
+                else
+                  printf("Linia %d: Clasa %s nu exista.\n", yylineno, $1);
+              }
               | ID ID ASSIGN NEW ID'['']'
+              {
+                if(cObj($1)==1)
+                  addObjects($1,$2);
+                else
+                  printf("Linia %d: Clasa %s nu exista.\n", yylineno, $1);
+              }
               | ID ID ASSIGN NEW ID
+              {
+                if(cObj($1)==1)
+                  addObjects($1,$2);
+                else
+                  printf("Linia %d: Clasa %s nu exista.\n", yylineno, $1);
+              }
               ;
 
 parametrii_call : param_call ',' parametrii_call
@@ -153,6 +180,7 @@ semne : GT | LT | EQ | LET | GET ;
 expr_bool : '(' expr_bool ')'
           | expr_bool AND expr_bool
           | expr_bool OR expr_bool
+          | NOT expr_bool
           | expresie semne expresie
           ;
 
@@ -260,7 +288,7 @@ bloc :
 		var_depth++;
 		strcpy(var_current_member, "main");
 	}
-	BGIN list END { printare();}
+	BGIN list END 
 	{
 		// Variabile
 		var_scope--;
@@ -299,7 +327,12 @@ int main(int argc, char** argv){
    tables_config();
 
    yyparse();
+   printf("   Variabile: \n");
    printVars(NULL);
+   printf("   Functii: \n");
+   printFunctii();
+   printf("   Clase: \n");
+   printClase();
    print_results();
    fclose(yyin);
 }

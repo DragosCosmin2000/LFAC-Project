@@ -12,8 +12,15 @@ typedef struct Functions {
     int locatie;
 }Functions;
 
+typedef struct Class{
+    char className[20];
+    char objects[20][20];    
+}Class;
 Functions functions[n];
+Class clase[n];
+int nr_classes;
 int nr_functions;
+int nr_objects;
 void takeParameters(char *param ,char cuv[][10]){
     int x=0;
     char *aux,*aux1;
@@ -55,16 +62,50 @@ int cFunc(char *type, char* name, char *param,int nr_param,int locate){
     }
     return 1;
 }
-void printare(){
+
+int cClas(char *name){
+    int i;
+    for(i=0;i<nr_classes;i++)
+        if(strcmp(clase[i].className,name)==0)
+            return 0;
+    return 1;
+}
+void pushClas(char* name){
+    strcpy(clase[nr_classes++].className,name);
+}
+int cObj(char *name){
+    int i;
+    for(i=0;i<nr_classes;i++)
+        if(strcmp(clase[i].className,name)==0)
+            return 1;
+    return 0;
+}
+void addObjects(char* clsName,char* objName){
+    int i;
+    for(i=0;i<nr_classes;i++)
+        if(strcmp(clase[i].className,clsName)==0)
+            break;
+    strcpy(clase[i].objects[nr_objects++],objName);
+}
+void printFunctii(){
     int i;
     for(i=0;i<nr_functions;i++){
-        printf("%s %s %d ",functions[i].typeFunction,functions[i].nameFunction,functions[i].numberParameters);
+        printf("Tip: %s | Nume: %s | Nr Parametrii: %d | Tipul parametrii:",functions[i].typeFunction,functions[i].nameFunction,functions[i].numberParameters);
         for(int j=0;j<functions[i].numberParameters;j++)
             printf("%s ",functions[i].parameters[j]);
         if(functions[i].locatie==1)
-            printf(" Inside a class");
+            printf("| Locatie: Inside a class");
         else
-            printf(" global function");
+            printf("| Locatie: Global function");
+        printf("\n");
+    }
+}
+void printClase(){
+    int i,j;
+    for(i=0;i<nr_classes;i++){
+        printf("Clasa: %s cu obiectele: ",clase[i].className);
+        for(j=0;j<nr_objects;j++)
+            printf("%s ",clase[i].objects[j]);
         printf("\n");
     }
 }

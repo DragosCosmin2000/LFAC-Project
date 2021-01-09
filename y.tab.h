@@ -1,9 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.5.1.  */
+/* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
-   Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,9 +29,6 @@
 
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
-
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
 
 #ifndef YY_YY_Y_TAB_H_INCLUDED
 # define YY_YY_Y_TAB_H_INCLUDED
@@ -80,7 +76,8 @@ extern int yydebug;
     LET = 286,
     GET = 287,
     AND = 288,
-    OR = 289
+    OR = 289,
+    NOT = 290
   };
 #endif
 /* Tokens.  */
@@ -116,12 +113,14 @@ extern int yydebug;
 #define GET 287
 #define AND 288
 #define OR 289
+#define NOT 290
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+
 union YYSTYPE
 {
-#line 23 "limbaj.y"
+#line 23 "limbaj.y" /* yacc.c:1909  */
 
    char* strval;
    char* type;
@@ -129,9 +128,9 @@ union YYSTYPE
    int const_flag;
    float floatval;
 
-#line 133 "y.tab.h"
-
+#line 132 "y.tab.h" /* yacc.c:1909  */
 };
+
 typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
