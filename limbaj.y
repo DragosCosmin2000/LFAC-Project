@@ -3,12 +3,21 @@
 #include <string.h>
 #include <stdlib.h>
 #include "limbaj.h"
+#include "functii.h"
+#include "variabile.h"
 extern FILE* yyin;
 extern FILE* yyout;
 extern char* yytext;
 extern int yylineno;
 extern unsigned program_status;
 int yylex();
+int nr_parametrii=0;
+int locatie=0;
+
+
+int var_depth = 0, var_scope = 0;
+char var_current_member[300] = "global";
+
 void yyerror(const char* error_message);
 %}
 %union{
@@ -25,11 +34,13 @@ void yyerror(const char* error_message);
 %token EVAL ASSIGN TOUPPER TOLOWER LENGTH BGIN END PRV PUB NEW CLASS IF WHILE FOR
 %token<const_flag> CONST
 %type<intval> eval_exp calculate
-%token GT LT EQ LET GET AND OR
+%token GT LT EQ LET GET
+%type<strval> parametrii param
+%type<type> tip
 
+%left AND OR
 %left '+' '-'
 %left '*' '/' '%'
-%left AND OR
 
 %start progr
 %%
@@ -41,12 +52,14 @@ declaratii : declaratie ';'
            | declaratii declaratie ';'
            ;
 
-declaratie : statements
+declaratie : statements 
            | decl_clase
-           | decl_functii
+           | decl_functii{ if(program_status==0){ printf("Program gresit.\n");return 0;}}
            ;
 
-decl_clase : CLASS ID '{' continut_clasa '}' ;
+decl_clase : CLASS ID '{'
+            {locatie=1;}
+             continut_clasa '}' {locatie=0;};
 
 continut_clasa : PRV ':' declaratii
                | PUB ':' declaratii
@@ -62,12 +75,12 @@ creare_obiect : ID ID ASSIGN NEW ID'['NR']'
               | ID ID ASSIGN NEW ID 
               ;
 
-parametrii_call : param_call ',' parametrii_call
-                | param_call
+parametrii_call : param_call ',' parametrii_call 
+                | param_call 
                 ;
                 
-param_call : expresie
-           | expresie_string
+param_call : expresie 
+           | expresie_string  
            ;
 
 tip : INT | FLOAT | BOOL | STRING | CHAR ;
@@ -90,7 +103,6 @@ decl_for : FOR '(' ID ASSIGN ID ';' expr_bool ';' expresie ')' '{' list '}' ;
 
 semne : GT | LT | EQ | LET | GET ;
 
-//operatori_logici : AND | OR ;
 
 expr_bool : '(' expr_bool ')'
           | expr_bool AND expr_bool
@@ -98,16 +110,36 @@ expr_bool : '(' expr_bool ')'
           | expresie semne expresie
           ;
 
-decl_functii : tip ID '(' parametrii ')' '{' list '}'
-             | tip ID '(' ')' '{' list '}'
+decl_functii : tip ID '(' parametrii ')'  
+            {
+                if(cFunc($1,$2,$4,nr_parametrii,locatie)==1)
+                  pushFunc($1,$2,$4,nr_parametrii,locatie);
+                else{
+                  printf("Eroare linia %d: Functia '%s' deja exista.\n",yylineno,$2);
+                  program_status=0;
+                }
+               nr_parametrii=0;
+            }
+            '{' list '}'
+             | tip ID '(' ')' 
+               {
+                  nr_parametrii=0;
+                  if(cFunc($1,$2,0,nr_parametrii,locatie)==1)
+                     pushFunc($1,$2,0,nr_parametrii,locatie);
+                  else{
+                     printf("Eroare linia %d: Functia '%s' deja exista.\n",yylineno,$2);
+                     program_status=0;
+                  }
+               }
+             '{' list '}'
              ;
 
-parametrii : param ',' parametrii
-           | param
+parametrii : param ',' parametrii {strcat($$,$3);}
+           | param {strcpy($$,$1);}
            ;
 
-param : tip ID
-      | tip ID'['']'
+param : tip ID {strcpy($$, $1); strcat($$, " "); strcat($$, $2); strcat($$, ",");nr_parametrii++; }
+      | tip ID'['']' {strcpy($$, $1); strcat($$, " "); strcat($$, $2); strcat($$, "[]"); strcat($$, ",");nr_parametrii++; }
       ;
 
 expresie : expresie '+' expresie
@@ -117,7 +149,7 @@ expresie : expresie '+' expresie
          | expresie '%' expresie
          | '(' expresie ')'
          | VAL
-         | ID
+         | ID 
          | ID '[' NR ']'
          | LENGTH '(' ID ')'
          | apelare_functii
@@ -151,7 +183,7 @@ statements : decl_variabile
            | calculate
            ;
 
-bloc : BGIN list END
+bloc : BGIN list END { printare();}
      ;
 
 calculate : EVAL '(' eval_exp ')' {printf("Valoare: %i\n", $3);}

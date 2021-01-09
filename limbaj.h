@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #define OUTPUT_FILE "symbol_table.txt"
 

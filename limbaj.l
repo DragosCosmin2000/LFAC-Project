@@ -43,7 +43,7 @@
 "new" {return NEW;}
 "class" {return CLASS;}
 
-[_a-zA-Z][_a-zA-Z0-9]* {return ID;}
+[_a-zA-Z][_a-zA-Z0-9]* {yylval.strval = strdup(yytext); return ID;}
 
 [+-]?[1-9][0-9]*|0 {yylval.intval = atoi(yytext); return NR;}
 [+-]?([1-9][0-9]*\.[0-9]+)|(0\.[0-9]+) {return NRFLOAT;}

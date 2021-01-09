@@ -965,7 +965,7 @@ YY_RULE_SETUP
 case 32:
 YY_RULE_SETUP
 #line 46 "limbaj.l"
-{return ID;}
+{yylval.strval = strdup(yytext); return ID;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
