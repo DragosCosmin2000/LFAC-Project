@@ -6,12 +6,22 @@ char function1(float anume,integer baawda,integer nununuu){
     Eval( 5 + 6 + 7 ) ;
 };
 class Clasa {
-    private : 
+    private :
         char function2(bool paramul_a,string dadadab){
             integer aaa;
             float a:=b;
         };
         integer b;
+};
+
+for( i := 1 ; i < a ; i := i + 1 ) {
+    a := 20;
+    string c;
+    string b := 123.5;
+    integer abc := "salutare" + "buna";
+    while( ( a >= function1(2) || a == 2 * 9) ) {
+      float wsa;
+    };
 };
 integer b[100];
 main(){

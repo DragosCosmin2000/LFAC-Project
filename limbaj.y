@@ -14,9 +14,9 @@ int yylex();
 int nr_parametrii=0;
 int locatie=0;
 
-
+char exp_type[100] = "none";
 int var_depth = 0, var_scope = 0;
-char var_current_member[300] = "global";
+char aux_var_current_member[300], var_current_member[300] = "global";
 
 void yyerror(const char* error_message);
 %}
@@ -47,19 +47,33 @@ void yyerror(const char* error_message);
 
 progr : declaratii bloc {printf("Corect.\n");}
       ;
-      
+
 declaratii : declaratie ';'
            | declaratii declaratie ';'
            ;
 
-declaratie : statements 
+declaratie : statements
            | decl_clase
            | decl_functii{ if(program_status==0){ printf("Program gresit.\n");return 0;}}
            ;
 
 decl_clase : CLASS ID '{'
             {locatie=1;}
-             continut_clasa '}' {locatie=0;};
+            {
+            	// Variabile
+            	var_scope++;
+            	var_depth++;
+            	strcpy(var_current_member, "class ");
+            	strcat(var_current_member, $2);
+            }
+             continut_clasa '}' {locatie=0;}
+             {
+            	// Variabile
+            	var_scope--;
+            	var_depth--;
+            	strcpy(var_current_member, "global");
+            }
+            ;
 
 continut_clasa : PRV ':' declaratii
                | PUB ':' declaratii
@@ -70,22 +84,31 @@ apelare_functii : ID '(' parametrii_call ')'
                 | ID '(' ')'
                 ;
 
-creare_obiect : ID ID ASSIGN NEW ID'['NR']' 
-              | ID ID ASSIGN NEW ID'['']' 
-              | ID ID ASSIGN NEW ID 
+creare_obiect : ID ID ASSIGN NEW ID'['NR']'
+              | ID ID ASSIGN NEW ID'['']'
+              | ID ID ASSIGN NEW ID
               ;
 
-parametrii_call : param_call ',' parametrii_call 
-                | param_call 
+parametrii_call : param_call ',' parametrii_call
+                | param_call
                 ;
-                
-param_call : expresie 
-           | expresie_string  
+
+param_call : expresie
+           | expresie_string
            ;
 
 tip : INT | FLOAT | BOOL | STRING | CHAR ;
 
 decl_variabile : tip ID
+            		{
+            			if(!checkVariableExistence($2, $1, var_scope, var_depth, var_current_member))
+            				addVariable($2, $1, var_scope, var_depth, var_current_member);
+            			else
+            			{
+            				program_status = 0;
+            				printf("Linia %d: Variabila %s exista deja.\n", yylineno, $2);
+            			}
+            		}
                | tip ID ASSIGN expresie
                | tip ID ASSIGN expresie_string
                | tip ID '[' NR ']'
@@ -94,12 +117,35 @@ decl_variabile : tip ID
 decl_const : CONST tip ID ASSIGN NR
            | CONST tip ID ASSIGN STRING
            ;
-           
-decl_if : IF '(' expr_bool ')' '{' list'}' ;
 
-decl_while : WHILE '(' expr_bool ')' '{' list '}' ;
+decl_if :
+        {
+          var_depth++;
+        }
+        IF '(' expr_bool ')' '{' list'}'
+        {
+          var_depth--;
+        }
+        ;
+decl_while :
+            {
+              var_depth++;
+            }
+            WHILE '(' expr_bool ')' '{' list '}'
+            {
+              var_depth--;
+            }
+            ;
 
-decl_for : FOR '(' ID ASSIGN ID ';' expr_bool ';' expresie ')' '{' list '}' ;
+decl_for :
+          {
+            var_depth++;
+          }
+          FOR '(' ID ASSIGN expresie ';' expr_bool ';' ID ASSIGN expresie ')' '{' list '}'
+          {
+            var_depth--;
+          }
+          ;
 
 semne : GT | LT | EQ | LET | GET ;
 
@@ -110,7 +156,8 @@ expr_bool : '(' expr_bool ')'
           | expresie semne expresie
           ;
 
-decl_functii : tip ID '(' parametrii ')'  
+decl_functii : tip ID
+	     '(' parametrii ')'
             {
                 if(cFunc($1,$2,$4,nr_parametrii,locatie)==1)
                   pushFunc($1,$2,$4,nr_parametrii,locatie);
@@ -120,8 +167,31 @@ decl_functii : tip ID '(' parametrii ')'
                 }
                nr_parametrii=0;
             }
+
+            {
+          		// Variabile
+          		var_scope++;
+          		var_depth++;
+          		if(!strncmp(var_current_member, "class", 5))
+          		{
+          			strcpy(aux_var_current_member, var_current_member);
+          			strcat(var_current_member, " method ");
+          			strcat(var_current_member, $2);
+          		}
+              else
+              {
+                strcpy(var_current_member, "function ");
+                strcat(var_current_member, $2);
+              }
+            }
             '{' list '}'
-             | tip ID '(' ')' 
+            {
+		// Variabile
+		var_scope--;
+		var_depth--;
+		strcpy(var_current_member, aux_var_current_member);
+            }
+             | tip ID '(' ')'
                {
                   nr_parametrii=0;
                   if(cFunc($1,$2,0,nr_parametrii,locatie)==1)
@@ -149,7 +219,7 @@ expresie : expresie '+' expresie
          | expresie '%' expresie
          | '(' expresie ')'
          | VAL
-         | ID 
+         | ID
          | ID '[' NR ']'
          | LENGTH '(' ID ')'
          | apelare_functii
@@ -183,7 +253,20 @@ statements : decl_variabile
            | calculate
            ;
 
-bloc : BGIN list END { printare();}
+bloc :
+	{
+		// Variabile
+		var_scope++;
+		var_depth++;
+		strcpy(var_current_member, "main");
+	}
+	BGIN list END { printare();}
+	{
+		// Variabile
+		var_scope--;
+		var_depth--;
+		strcpy(var_current_member, "global");
+	}
      ;
 
 calculate : EVAL '(' eval_exp ')' {printf("Valoare: %i\n", $3);}
@@ -214,8 +297,9 @@ int main(int argc, char** argv){
    yyin=fopen(argv[1],"r");
    // Tables configuration
    tables_config();
-   
+
    yyparse();
+   printVars(NULL);
    print_results();
    fclose(yyin);
 }
