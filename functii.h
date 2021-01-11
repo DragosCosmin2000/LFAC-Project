@@ -5,15 +5,15 @@
 #define n 100
 
 typedef struct Functions {
-    char typeFunction[20];
-    char nameFunction[20];
+    char *typeFunction;
+    char *nameFunction;
     int numberParameters;
     char parameters[10][10];
     int locatie;
 }Functions;
 
 typedef struct Class{
-    char className[20];
+    char *className;
     char objects[20][20];    
 }Class;
 Functions functions[n];
@@ -35,8 +35,8 @@ void takeParameters(char *param ,char cuv[][10]){
     }
 }
 void pushFunc (char *type, char* name, char *param,int nr_param,int locate){
-    strcpy(functions[nr_functions].typeFunction,type);   
-    strcpy(functions[nr_functions].nameFunction,name);
+    functions[nr_functions].typeFunction=strdup(type);
+    functions[nr_functions].nameFunction=strdup(name);
     functions[nr_functions].numberParameters=nr_param;
     functions[nr_functions].locatie=locate;
     takeParameters(param,functions[nr_functions++].parameters);
@@ -71,7 +71,7 @@ int cClas(char *name){
     return 1;
 }
 void pushClas(char* name){
-    strcpy(clase[nr_classes++].className,name);
+    clase[nr_classes++].className=strdup(name);
 }
 int cObj(char *name){
     int i;

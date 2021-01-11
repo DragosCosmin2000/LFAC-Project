@@ -33,7 +33,7 @@ void yyerror(const char* error_message);
 %token<type> INT FLOAT BOOL STRING CHAR
 %token EVAL ASSIGN TOUPPER TOLOWER LENGTH BGIN END PRV PUB NEW CLASS IF WHILE FOR
 %token<const_flag> CONST
-%type<intval> eval_exp calculate
+%type<intval> eval_exp calculate 
 %token GT LT EQ LET GET
 %type<strval> parametrii param
 %type<type> tip
@@ -89,10 +89,6 @@ continut_clasa : PRV ':' declaratii
                | PRV ':' declaratii PUB ':' declaratii
                ;
 
-apelare_functii : ID '(' parametrii_call ')'
-                | ID '(' ')'
-                ;
-
 creare_obiect : ID ID ASSIGN NEW ID'['NR']'
               {
                 if(cObj($1)==1)
@@ -115,6 +111,10 @@ creare_obiect : ID ID ASSIGN NEW ID'['NR']'
                   printf("Linia %d: Clasa %s nu exista.\n", yylineno, $1);
               }
               ;
+
+apelare_functii : ID '(' parametrii_call ')' 
+                | ID '(' ')'
+                ;
 
 parametrii_call : param_call ',' parametrii_call
                 | param_call
