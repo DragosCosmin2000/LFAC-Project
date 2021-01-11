@@ -34,8 +34,8 @@ void yyerror(const char* error_message);
 %token<const_flag> CONST
 %type<intval> eval_exp calculate
 %token GT LT EQ LET GET
-%type<strval> parametrii param
-%type<type> tip VAL expresie
+%type<strval> parametrii param  param_call parametrii_call
+%type<type> tip VAL expresie TOLOWER TOUPPER expresie_string
 
 %left AND OR NOT
 %left '+' '-'
@@ -111,16 +111,16 @@ creare_obiect : ID ID ASSIGN NEW ID'['NR']'
               }
               ;
 
-apelare_functii : ID '(' parametrii_call ')'
+apelare_functii : ID '(' parametrii_call ')' { printf("%s\n",$3);}
                 | ID '(' ')'
                 ;
 
-parametrii_call : param_call ',' parametrii_call
-                | param_call
+parametrii_call : param_call ',' parametrii_call {strcat($$, $3);}
+                | param_call {$$=$1;}
                 ;
 
-param_call : expresie
-           | expresie_string
+param_call : expresie {$$=$1;}
+           | expresie_string {$$= $1;}
            ;
 
 tip : INT | FLOAT | BOOL | STRING | CHAR ;
@@ -288,11 +288,11 @@ VAL : NR {$$ = "integer";}
     | CHARS {$$ = "char";}
     ;
 
-expresie_string : expresie_string '+' expresie_string
-                | '(' expresie_string ')'
-                | STRINGS
-                | TOUPPER '(' ID ')'
-                | TOLOWER '(' ID ')'
+expresie_string : expresie_string '+' expresie_string {$$="string";}
+                | '(' expresie_string ')' {$$="string";}
+                | STRINGS {$$="string";}
+                | TOUPPER '(' ID ')' {$$="string";} 
+                | TOLOWER '(' ID ')' {$$="string";}
                 ;
 
 list : statements ';'
