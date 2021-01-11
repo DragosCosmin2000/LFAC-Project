@@ -28,3 +28,11 @@ void print_results()
    }
    printf("Printare.\n");
 }
+
+char *get_exp_type(char *type1, char *type2)
+{
+  if(!strcmp(type1, "float") || !strcmp(type2, "float"))
+    return "float";
+  else
+    return "integer";
+}

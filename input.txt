@@ -1,23 +1,32 @@
-integer a:=3;
+float x;
+if(2<3){
+  integer x;
+};
+integer a:= 2;
 char function1(float anume,integer baawda,integer nununuu){
-    integer abb;
+    integer abb := 2 + 5;
     float a:= "dadada";
     func();
+    integer a;
     Eval( 5 + 6 + 7 ) ;
 };
 class masini {
     private :
         char function2(bool paramul_a,string dadadab){
             integer aaa;
-            float a:=b;
+            float a:= 2.0;
         };
         integer b;
+};
+class Clasa {
+  public:
+    integer a := 2;
 };
 masini masina1 := new masini;
 for( i := 1 ; i < a ; i := i + 1 ) {
     a := 20;
     string c;
-    string b := 123.5;
+    string b := "buna";
     integer abc := "salutare" + "buna";
     while( !( a >= function1(2) || a == 2 * 9) ) {
       float wsa;
@@ -28,6 +37,7 @@ main(){
     integer variabila_1_da;
     x := y;
     x := x;
+    integer abc := xyz;
     asdf(23);
     function(funct(),2);
     Eval( 5 + 6 + 7 * 5 - 12 ) ;

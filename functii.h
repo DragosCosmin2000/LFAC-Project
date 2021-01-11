@@ -14,7 +14,7 @@ typedef struct Functions {
 
 typedef struct Class{
     char *className;
-    char objects[20][20];    
+    char objects[20][20];
 }Class;
 Functions functions[n];
 Class clase[n];

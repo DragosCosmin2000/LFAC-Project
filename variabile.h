@@ -95,3 +95,19 @@ void printVars(FILE *file)
 		printf("\n");
 	}
 }
+
+char *get_var_type(char *id, char *current_member, int current_depth)
+{
+	for(int i = 0; i < nr_vars; i++)
+	{
+		if(!strcmp(id, var_table[i].name))
+		{
+			if(var_table[i].depth <= current_depth)
+			{
+				if(!strcmp(var_table[i].memberOf, current_member) || !strncmp(var_table[i].memberOf, current_member, strlen(var_table[i].memberOf)))
+					return var_table[i].var_type;
+			}
+		}
+	}
+	return "undef";
+}

@@ -14,7 +14,6 @@ int yylex();
 int nr_parametrii=0;
 int locatie=0;
 
-char exp_type[100] = "none";
 int var_depth = 0, var_scope = 0;
 char aux_var_current_member[300], var_current_member[300] = "global";
 
@@ -33,10 +32,10 @@ void yyerror(const char* error_message);
 %token<type> INT FLOAT BOOL STRING CHAR
 %token EVAL ASSIGN TOUPPER TOLOWER LENGTH BGIN END PRV PUB NEW CLASS IF WHILE FOR
 %token<const_flag> CONST
-%type<intval> eval_exp calculate 
+%type<intval> eval_exp calculate
 %token GT LT EQ LET GET
 %type<strval> parametrii param
-%type<type> tip
+%type<type> tip VAL expresie
 
 %left AND OR NOT
 %left '+' '-'
@@ -112,7 +111,7 @@ creare_obiect : ID ID ASSIGN NEW ID'['NR']'
               }
               ;
 
-apelare_functii : ID '(' parametrii_call ')' 
+apelare_functii : ID '(' parametrii_call ')'
                 | ID '(' ')'
                 ;
 
@@ -137,6 +136,14 @@ decl_variabile : tip ID
             			}
             		}
                | tip ID ASSIGN expresie
+               {
+                  // Variabile
+                  if(strcmp($1, $4))
+                  {
+                    program_status = 0;
+                    printf("Linia %d: Expresia trebuie sa aiba tipul %s.\n", yylineno, $1);
+                  }
+               }
                | tip ID ASSIGN expresie_string
                | tip ID '[' NR ']'
                ;
@@ -186,6 +193,46 @@ expr_bool : '(' expr_bool ')'
 
 decl_functii : tip ID
 	     '(' parametrii ')'
+
+       {
+         // Variabile
+         var_scope++;
+         var_depth++;
+         if(!strncmp(var_current_member, "class", 5))
+         {
+           strcpy(aux_var_current_member, var_current_member);
+           strcat(var_current_member, " method ");
+           char signature[300];
+           strcpy(signature, $1);
+           strcat(signature, " ");
+           strcat(signature, $2);
+           strcat(signature, " ");
+           strcat(signature, "(");
+           strcat(signature, " ");
+           strcat(signature, $4);
+           signature[strlen(signature) - 1] = '\0';
+           strcat(signature, " ");
+           strcat(signature, ")");
+           strcat(var_current_member, signature);
+         }
+         else
+         {
+           strcpy(var_current_member, "function ");
+           char signature[300];
+           strcpy(signature, $1);
+           strcat(signature, " ");
+           strcat(signature, $2);
+           strcat(signature, " ");
+           strcat(signature, "(");
+           strcat(signature, " ");
+           strcat(signature, $4);
+           signature[strlen(signature) - 1] = '\0';
+           strcat(signature, " ");
+           strcat(signature, ")");
+           strcat(var_current_member, signature);
+         }
+       }
+
             {
                 if(cFunc($1,$2,$4,nr_parametrii,locatie)==1)
                   pushFunc($1,$2,$4,nr_parametrii,locatie);
@@ -195,29 +242,12 @@ decl_functii : tip ID
                 }
                nr_parametrii=0;
             }
-
-            {
-          		// Variabile
-          		var_scope++;
-          		var_depth++;
-          		if(!strncmp(var_current_member, "class", 5))
-          		{
-          			strcpy(aux_var_current_member, var_current_member);
-          			strcat(var_current_member, " method ");
-          			strcat(var_current_member, $2);
-          		}
-              else
-              {
-                strcpy(var_current_member, "function ");
-                strcat(var_current_member, $2);
-              }
-            }
             '{' list '}'
             {
-		// Variabile
-		var_scope--;
-		var_depth--;
-		strcpy(var_current_member, aux_var_current_member);
+          		// Variabile
+          		var_scope--;
+          		var_depth--;
+          		strcpy(var_current_member, aux_var_current_member);
             }
              | tip ID '(' ')'
                {
@@ -240,22 +270,22 @@ param : tip ID {strcpy($$, $1); strcat($$, " "); strcat($$, $2); strcat($$, ",")
       | tip ID'['']' {strcpy($$, $1); strcat($$, " "); strcat($$, $2); strcat($$, "[]"); strcat($$, ",");nr_parametrii++; }
       ;
 
-expresie : expresie '+' expresie
-         | expresie '-' expresie
-         | expresie '*' expresie
-         | expresie '/' expresie
-         | expresie '%' expresie
-         | '(' expresie ')'
-         | VAL
-         | ID
-         | ID '[' NR ']'
-         | LENGTH '(' ID ')'
-         | apelare_functii
+expresie : expresie '+' expresie {$$ = get_exp_type($1, $3);}
+         | expresie '-' expresie {$$ = get_exp_type($1, $3);}
+         | expresie '*' expresie {$$ = get_exp_type($1, $3);}
+         | expresie '/' expresie {$$ = get_exp_type($1, $3);}
+         | expresie '%' expresie {$$ = get_exp_type($1, $3);}
+         | '(' expresie ')' {$$ = $2;}
+         | VAL {$$ = $1;}
+         | ID {$$ = get_var_type($1, var_current_member, var_depth);}
+         | ID '[' NR ']' {$$ = get_var_type($1, var_current_member, var_depth);}
+         | LENGTH '(' ID ')' {$$ = "integer";}
+         | apelare_functii {;}
          ;
 
-VAL : NR
-    | NRFLOAT
-    | CHARS
+VAL : NR {$$ = "integer";}
+    | NRFLOAT {$$ = "float";}
+    | CHARS {$$ = "char";}
     ;
 
 expresie_string : expresie_string '+' expresie_string
@@ -288,7 +318,7 @@ bloc :
 		var_depth++;
 		strcpy(var_current_member, "main");
 	}
-	BGIN list END 
+	BGIN list END
 	{
 		// Variabile
 		var_scope--;
