@@ -982,17 +982,17 @@ YY_RULE_SETUP
 case 35:
 YY_RULE_SETUP
 #line 50 "limbaj.l"
-{return NRFLOAT;}
+{yylval.floatval = atoi(yytext);return NRFLOAT;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 52 "limbaj.l"
-{return CHARS;}
+{yylval.charval = yytext[1]; return CHARS;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 53 "limbaj.l"
-{return STRINGS;}
+{yylval.strval = strdup(yytext); return STRINGS;}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP

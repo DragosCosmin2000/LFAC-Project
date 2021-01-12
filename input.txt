@@ -1,8 +1,15 @@
 float x;
 if(2<3){
   integer x;
+  while(x <= 20){
+    x := x + 1;
+  };
+  string x;
 };
-integer a:= 2;
+integer suma(){
+  float p;
+};
+integer a;
 integer function2(integer baawda){
     integer abb := 2 + 5;
     float a:= "dadada";
@@ -10,6 +17,7 @@ integer function2(integer baawda){
     integer a;
     Eval( 5 + 6 + 7 ) ;
 };
+string a;
 integer function1(integer baawda,integer nununuu){
     integer abb := 2 + 5;
     float a:= "dadada";
@@ -35,9 +43,17 @@ for( i := 1 ; i < a ; i := i + 1 ) {
     string c;
     string b := "buna";
     integer abc := "salutare" + "buna";
-    while( !( a >= function1(2,2) || a == 2 * 9) ) {
+    while( !( a >= function1(w,2) || a == 2 * 9) ) {
       float wsa;
     };
+};
+
+float funcaa(integer baawda,integer nununuu){
+    integer abb := 2 + 5;
+    float a:= "dadada";
+    func();
+    integer a;
+    Eval( 5 + 6 + 7 ) ;
 };
 
 integer b[100];
@@ -45,8 +61,10 @@ main(){
     integer variabila_1_da;
     x := y;
     x := x;
+    integer ax := length(x);
+    float xyz;
     integer abc := xyz;
     asdf(23);
     function1(function2(4),2);
-    Eval( 5 + 6 + 7 * 5 - 12 ) ;
+    Eval( 5 + 6 + 7 * 5 - 12 + dadaw(2)) ;
 end}

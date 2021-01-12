@@ -15,12 +15,12 @@ typedef struct Functions {
 typedef struct Class{
     char *className;
     char objects[20][20];
+    int nr_objects;
 }Class;
 Functions functions[n];
 Class clase[n];
 int nr_classes;
 int nr_functions;
-int nr_objects;
 void takeParameters(char *param ,char cuv[][10]){
     int x=0;
     char *aux,*aux1;
@@ -39,7 +39,10 @@ void pushFunc (char *type, char* name, char *param,int nr_param,int locate){
     functions[nr_functions].nameFunction=strdup(name);
     functions[nr_functions].numberParameters=nr_param;
     functions[nr_functions].locatie=locate;
-    takeParameters(param,functions[nr_functions++].parameters);
+    if(nr_param != 0)
+    {
+      takeParameters(param,functions[nr_functions++].parameters);
+    }
 }
 int cFunc(char *type, char* name, char *param,int nr_param,int locate){
     int i;
@@ -102,21 +105,29 @@ int cClas(char *name){
     return 1;
 }
 void pushClas(char* name){
-    clase[nr_classes++].className=strdup(name);
-}
-int cObj(char *name){
-    int i;
-    for(i=0;i<nr_classes;i++)
-        if(strcmp(clase[i].className,name)==0)
-            return 1;
-    return 0;
+    clase[nr_classes].className=strdup(name);
+    clase[nr_classes++].nr_objects=0;
 }
 void addObjects(char* clsName,char* objName){
     int i;
     for(i=0;i<nr_classes;i++)
-        if(strcmp(clase[i].className,clsName)==0)
-            break;
-    strcpy(clase[i].objects[nr_objects++],objName);
+        if(strcmp(clase[i].className,clsName)==0){
+    		strcpy(clase[i].objects[clase[i].nr_objects++],objName);
+		break;
+	}
+}
+
+int cObj(char *name){
+    int i;
+    for(i=0;i<nr_classes;i++)
+        if(strcmp(clase[i].className,name)==0){
+	    	int j;
+		for(j=0;j<clase[i].nr_objects;j++)
+			if(strcmp(name,clase[i].objects[j])==0)
+       		    		return 0;
+		break;
+	}
+    return 1;
 }
 void printFunctii(){
     int i;
@@ -135,7 +146,7 @@ void printClase(){
     int i,j;
     for(i=0;i<nr_classes;i++){
         printf("Clasa: %s cu obiectele: ",clase[i].className);
-        for(j=0;j<nr_objects;j++)
+        for(j=0;j<clase[i].nr_objects;j++)
             printf("%s ",clase[i].objects[j]);
         printf("\n");
     }

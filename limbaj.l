@@ -47,10 +47,10 @@
 [_a-zA-Z][_a-zA-Z0-9]* {yylval.strval = strdup(yytext); return ID;}
 
 [+-]?[1-9][0-9]*|0 {yylval.intval = atoi(yytext); return NR;}
-[+-]?([1-9][0-9]*\.[0-9]+)|(0\.[0-9]+) {return NRFLOAT;}
+[+-]?([1-9][0-9]*\.[0-9]+)|(0\.[0-9]+) {yylval.floatval = atoi(yytext);return NRFLOAT;}
 
-"'"[a-zA-Z]"'" {return CHARS;}
-\"[^"\n]*\" {return STRINGS;}
+"'"[a-zA-Z]"'" {yylval.charval = yytext[1]; return CHARS;}
+\"[^"\n]*\" {yylval.strval = strdup(yytext); return STRINGS;}
 
 [ \t] ;
 \n {yylineno++;}
