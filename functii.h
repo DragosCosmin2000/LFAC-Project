@@ -62,7 +62,38 @@ int cFunc(char *type, char* name, char *param,int nr_param,int locate){
     }
     return 1;
 }
-
+char* get_fun_type (char* name){
+    int i;
+    for(i=0;i<nr_functions;i++)
+        if(strcmp(functions[i].nameFunction,name)==0)
+            return functions[i].typeFunction;
+}
+int checkParametrii1(char* name){
+   int i;
+    for(i=0;i<nr_functions;i++)
+        if(strcmp(functions[i].nameFunction,name)==0)
+            return 1;
+    return 0;
+}
+int checkParametrii2(char* name,char* param,int nr_param){
+    char *aux;
+    int k=0,i;
+    for(i=0;i<nr_functions;i++){
+        if(strcmp(functions[i].nameFunction,name)==0 && nr_param==functions[i].numberParameters){
+            char *aux;
+            aux = strtok( param, " " );
+            k=0;
+            while(aux){
+                if(strcmp(functions[i].parameters[k],aux)!=0)
+                    return 0;
+                k++;
+                aux=strtok(NULL," ");
+            }
+            return 1;
+    }
+    }
+    return 2;
+}
 int cClas(char *name){
     int i;
     for(i=0;i<nr_classes;i++)

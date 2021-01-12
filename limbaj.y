@@ -11,9 +11,9 @@ extern char* yytext;
 extern int yylineno;
 extern unsigned program_status;
 int yylex();
-int nr_parametrii=0;
+int nr_parametrii=0,pr1=0,pr2=0;
 int locatie=0;
-
+int ok=0;
 int var_depth = 0, var_scope = 0;
 char aux_var_current_member[300], var_current_member[300] = "global";
 
@@ -34,8 +34,9 @@ void yyerror(const char* error_message);
 %token<const_flag> CONST
 %type<intval> eval_exp calculate
 %token GT LT EQ LET GET
-%type<strval> parametrii param  param_call parametrii_call
-%type<type> tip VAL expresie expresie_string apelare_functii
+%type<strval> parametrii param  param_call parametrii_call 
+%type<strval> apelare_functii
+%type<type> tip VAL expresie expresie_string param_f
 
 %left AND OR NOT
 %left '+' '-'
@@ -43,7 +44,6 @@ void yyerror(const char* error_message);
 
 %start progr
 %%
-
 progr : declaratii bloc {printf("Corect.\n");}
       ;
 
@@ -53,7 +53,7 @@ declaratii : declaratie ';'
 
 declaratie : statements
            | decl_clase
-           | decl_functii{ if(program_status==0){ printf("Program gresit.\n");return 0;}}
+           | decl_functii //{ if(program_status==0){ printf("Program gresit.\n");return 0;}}
            ;
 
 decl_clase : CLASS ID '{'
@@ -111,8 +111,25 @@ creare_obiect : ID ID ASSIGN NEW ID'['NR']'
               }
               ;
 
-apelare_functii : ID '(' parametrii_call ')' { printf("Parametrii apel functie %s: %s\n", $1, $3); $$ = "ceva";}
-                | ID '(' ')' {$$ = "ceva";}
+apelare_functii : ID '(' parametrii_call ')' 
+                {
+                    if(checkParametrii2($1,$3,pr2)==0)
+                      printf("Eroare linia %d : parametrii nu se potrivesc \n",yylineno);
+                    else
+                      if(checkParametrii2($1,$3,pr2)==2)
+                        printf("Eroare linia %d : functia %s nu exista \n",yylineno,$1);
+                    ok=0;
+                    pr2=0;
+                }
+                | ID '(' ')' 
+                {
+                if(ok==2)
+                  if(checkParametrii1($1)==0)
+                          printf("aeroare\n");
+                      else
+                          $$=get_fun_type($1);
+                ok=0;
+                }
                 ;
 
 parametrii_call : param_call ',' parametrii_call
@@ -122,8 +139,9 @@ parametrii_call : param_call ',' parametrii_call
                   strcat(params, " ");
                   strcat(params, $3);
                   $$ = params;
+                  pr2++;
                 }
-                | param_call {$$=$1;}
+                | param_call {$$=$1;pr2++;}
                 ;
 
 param_call : expresie {$$=$1;}
@@ -277,6 +295,16 @@ param : tip ID {strcpy($$, $1); strcat($$, " "); strcat($$, $2); strcat($$, ",")
       | tip ID'['']' {strcpy($$, $1); strcat($$, " "); strcat($$, $2); strcat($$, "[]"); strcat($$, ",");nr_parametrii++; }
       ;
 
+param_f : expresie {$$=$1; pr1++;}
+        | expresie ',' param_f
+          {
+                  char params[1000];
+                  strcpy(params, $$);
+                  strcat(params, " ");
+                  strcat(params, $3);
+                  $$ = params;
+                  pr1++;
+          };
 expresie : expresie '+' expresie {$$ = get_exp_type($1, $3);}
          | expresie '-' expresie {$$ = get_exp_type($1, $3);}
          | expresie '*' expresie {$$ = get_exp_type($1, $3);}
@@ -287,7 +315,20 @@ expresie : expresie '+' expresie {$$ = get_exp_type($1, $3);}
          | ID {$$ = get_var_type($1, var_current_member, var_depth);}
          | ID '[' NR ']' {$$ = get_var_type($1, var_current_member, var_depth);}
          | LENGTH '(' ID ')' {$$ = "integer";}
-         | apelare_functii {;}
+         | ID '(' param_f ')' { ok++;
+                                if(checkParametrii2($1,$3,pr1)==0)
+                                  printf("Eroare linia %d: functia %s are tip diferit\n",yylineno,$1);
+                                else
+                                  $$=get_fun_type($1);
+                                pr1=0;
+                              }
+        | ID '(' ')' {
+                      ok++;
+                      if(checkParametrii1($1)==0)
+                          printf("aeroare\n");
+                      else
+                          $$=get_fun_type($1);
+                     }
          ;
 
 VAL : NR {$$ = "integer";}
@@ -309,6 +350,7 @@ list : statements ';'
 statements : decl_variabile
            | apelare_functii
            | creare_obiect
+           | ID '['NR']' ASSIGN NR
            | ID ASSIGN expresie
            | ID ASSIGN expresie_string
            | decl_const
@@ -334,7 +376,7 @@ bloc :
 	}
      ;
 
-calculate : EVAL '(' eval_exp ')' {printf("Valoare: %i\n", $3);}
+calculate : EVAL '(' eval_exp ')' {if(program_status==1) printf("Valoare: %i\n", $3);}
           ;
 
 eval_exp : eval_exp '+' eval_exp {$$ = $1 + $3;}

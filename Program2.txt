@@ -1,0 +1,54 @@
+integer GGG;
+integer function1(integer a,float b){
+    integer GGG;
+};
+class Clasa1{
+    private:
+        integer GGG;
+};
+integer x;
+integer y;
+x:=9;
+y:=7;
+integer tvect[10];
+integer TEST ( integer a ,integer b,integer c){
+    integer t;
+};
+integer TEST ( bool a ,integer b){
+    integer l;
+};
+float FTEST (integer a){
+    integer s;
+};
+tvect[2]:=10;
+TEST(2,3 + x,4) ;
+GGG := GGG + 5 * 3 + TEST ( TEST(2,3 + x,4) + 45, 2 + x, 3) - 34 - 4 + tvect[2];
+integer a;
+a:=1;
+integer function3(integer x,float b,char b){
+    while(a<5){
+        a:=a+ 1;
+    };
+};
+
+class masini{
+    private: float function2(){
+        integer b;
+        b:=9;
+    };
+    public: 
+        string k;
+    
+};
+
+main(){
+    for( i := 1 ; i < a ; i := i + 1 ) {
+    a := 20;
+    string c;
+    string b := "buna";
+    integer abc := "salutare" + "buna";
+    while( !( a >= function3(2,2) || a == 2 * 9) ) {
+      float wsa;
+    };
+};
+end}

@@ -3,7 +3,14 @@ if(2<3){
   integer x;
 };
 integer a:= 2;
-char function1(float anume,integer baawda,integer nununuu){
+integer function2(integer baawda){
+    integer abb := 2 + 5;
+    float a:= "dadada";
+    func();
+    integer a;
+    Eval( 5 + 6 + 7 ) ;
+};
+integer function1(integer baawda,integer nununuu){
     integer abb := 2 + 5;
     float a:= "dadada";
     func();
@@ -28,10 +35,11 @@ for( i := 1 ; i < a ; i := i + 1 ) {
     string c;
     string b := "buna";
     integer abc := "salutare" + "buna";
-    while( !( a >= function1(2) || a == 2 * 9) ) {
+    while( !( a >= function1(2,2) || a == 2 * 9) ) {
       float wsa;
     };
 };
+
 integer b[100];
 main(){
     integer variabila_1_da;
@@ -39,12 +47,6 @@ main(){
     x := x;
     integer abc := xyz;
     asdf(23);
-    function(25,dadada(25) + 20,2);
+    function1(function2(4),2);
     Eval( 5 + 6 + 7 * 5 - 12 ) ;
-    b:= 9 + 4 + funct(da);
-    Clasa cls1 := new Clasa[5];
-    if( (a <= 5 || 6 > 2) && func(20) < 3 * 90 + a[20] - 30 )
-    {
-        a := 2;
-    };
 end}

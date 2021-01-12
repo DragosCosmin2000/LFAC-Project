@@ -1,0 +1,28 @@
+integer TEST ( integer a ,integer b,integer c){
+    integer y;
+};
+integer TEST ( integer a ,integer b,integer c){
+    integer y;
+};
+integer TEST ( bool a,integer c){
+    integer z;
+};
+
+float FTEST ( integer a ){
+ integer t;
+};
+integer x:=23;
+integer x;
+integer z;
+float fz:=2.3;
+main(){
+x := x + yyy;
+y :=  x + z;
+y := fz;
+y := 23 + fz + x;
+y := x + FTEST(23);
+TEST(2,4,fz);
+ATEST(23);
+Eval(fz);
+Eval(x+fz);
+end}
