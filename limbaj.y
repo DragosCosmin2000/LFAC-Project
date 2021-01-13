@@ -138,7 +138,7 @@ apelare_functii : ID '(' parametrii_call ')'
                      strcpy($3,aux3);
                      strcat($3, " ");
                     if(checkParametrii2($1,$3,pr2)==0)
-                      printf("Eroare linia %d : apel incorect.\n",yylineno);
+                      printf("Linia %d : apel incorect.\n",yylineno);
                     else
                        $$=get_fun_type($1);
                     pr2=0;
