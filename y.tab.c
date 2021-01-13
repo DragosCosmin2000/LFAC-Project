@@ -610,8 +610,8 @@ static const yytype_int16 yyrline[] =
      573,   598,   611,   642,   669,   670,   671,   674,   675,   676,
      677,   678,   681,   682,   685,   686,   687,   688,   737,   779,
      828,   870,   871,   872,   873,   874,   878,   878,   893,   896,
-     897,   898,   899,   900,   901,   902,   903,   904,   927,   928,
-     945
+     897,   898,   899,   900,   901,   902,   903,   904,   927,   961,
+     978
 };
 #endif
 
@@ -2722,12 +2722,45 @@ yyreduce:
 
   case 108:
 #line 927 "limbaj.y"
-                         {;}
-#line 2727 "y.tab.c"
+                         {
+            if(checkVariableExistence((yyvsp[-3].strval), "none", var_scope, var_depth, var_current_member) == 0)
+            {
+              program_status = 0;
+              printf("Linia %d: Variabila <%s> nu exista.\n", yylineno, (yyvsp[-3].strval));
+              (yyval.intval) = 0;
+            }
+            else
+            {
+              char type[100];
+              strcpy(type, get_var_type((yyvsp[-3].strval), var_current_member, var_depth));
+              variable mvar = get_var((yyvsp[-3].strval), var_current_member, var_depth);
+              if(!strcmp(type, "integer"))
+              {
+              	    int sz = mvar.vec_size;
+		    if(sz > 0 && (yyvsp[-1].intval) >= 0 && (yyvsp[-1].intval) < sz)
+		    {
+		      (yyval.intval) = (mvar.vec_intval)[(yyvsp[-1].intval)];
+		    }
+		    else
+		    {
+		      program_status = 0;
+		      printf("Linia %d: Out of range.\n", yylineno);
+		      (yyval.intval) = 0;
+		    }
+              }
+              else
+              {
+                program_status = 0;
+                printf("Linia %d: Variabila <%s> trebuie sa fie integer.\n", yylineno, (yyvsp[-3].strval));
+                (yyval.intval) = 0;
+              }
+            }
+         }
+#line 2760 "y.tab.c"
     break;
 
   case 109:
-#line 928 "limbaj.y"
+#line 961 "limbaj.y"
                                       {
         			if(checkParametrii2((yyvsp[-3].strval),(yyvsp[-1].strval),pr1)==0)
               {
@@ -2745,11 +2778,11 @@ yyreduce:
               }
                 pr1=0;
 		       }
-#line 2749 "y.tab.c"
+#line 2782 "y.tab.c"
     break;
 
   case 110:
-#line 945 "limbaj.y"
+#line 978 "limbaj.y"
                         {
           			if(checkParametrii1((yyvsp[-2].strval))==0)
                 {
@@ -2767,11 +2800,11 @@ yyreduce:
                      }
                 pr1=0;
   		       }
-#line 2771 "y.tab.c"
+#line 2804 "y.tab.c"
     break;
 
 
-#line 2775 "y.tab.c"
+#line 2808 "y.tab.c"
 
       default: break;
     }
@@ -3003,7 +3036,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 963 "limbaj.y"
+#line 996 "limbaj.y"
 
 
 void yyerror(const char* error_message)

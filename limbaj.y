@@ -924,7 +924,40 @@ eval_exp : eval_exp '+' eval_exp {$$ = $1 + $3;}
               }
             }
          }
-         | ID '[' NR ']' {;}
+         | ID '[' NR ']' {
+            if(checkVariableExistence($1, "none", var_scope, var_depth, var_current_member) == 0)
+            {
+              program_status = 0;
+              printf("Linia %d: Variabila <%s> nu exista.\n", yylineno, $1);
+              $$ = 0;
+            }
+            else
+            {
+              char type[100];
+              strcpy(type, get_var_type($1, var_current_member, var_depth));
+              variable mvar = get_var($1, var_current_member, var_depth);
+              if(!strcmp(type, "integer"))
+              {
+              	    int sz = mvar.vec_size;
+		    if(sz > 0 && $3 >= 0 && $3 < sz)
+		    {
+		      $$ = (mvar.vec_intval)[$3];
+		    }
+		    else
+		    {
+		      program_status = 0;
+		      printf("Linia %d: Out of range.\n", yylineno);
+		      $$ = 0;
+		    }
+              }
+              else
+              {
+                program_status = 0;
+                printf("Linia %d: Variabila <%s> trebuie sa fie integer.\n", yylineno, $1);
+                $$ = 0;
+              }
+            }
+         }
          | ID '(' parametrii_call ')' {
         			if(checkParametrii2($1,$3,pr1)==0)
               {
