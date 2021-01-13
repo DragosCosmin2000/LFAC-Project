@@ -382,7 +382,10 @@ void printVars()
         if(!strcmp(var_table[i].var_type, "integer") || !strcmp(var_table[i].var_type, "bool"))
         {
             if(var_table[i].vec_size != 0)
-                fprintf(symbol_table,"PRINTARE VECTOR");
+						for(int j = 0;j < var_table[i].vec_size; j++)
+						{
+							fprintf(symbol_table, "%d ", (var_table[i].vec_intval)[j]);
+						}
             else
                 fprintf(symbol_table,"%d ", var_table[i].intval);
         }
@@ -390,7 +393,10 @@ void printVars()
         if(!strcmp(var_table[i].var_type, "float"))
         {
             if(var_table[i].vec_size != 0)
-                fprintf(symbol_table,"PRINTARE VECTOR");
+						for(int j = 0;j < var_table[i].vec_size; j++)
+						{
+							fprintf(symbol_table,"%f ", (var_table[i].vec_floatval)[j]);
+						}
             else
                 fprintf(symbol_table,"%f ", var_table[i].floatval);
         }
@@ -398,7 +404,10 @@ void printVars()
         if(!strcmp(var_table[i].var_type, "string"))
         {
             if(var_table[i].vec_size != 0)
-                fprintf(symbol_table,"PRINTARE VECTOR");
+						for(int j = 0;j < var_table[i].vec_size; j++)
+						{
+							fprintf(symbol_table,"%s ", (var_table[i].vec_stringval)[j]);
+						}
             else
                 fprintf(symbol_table,"%s ", var_table[i].stringval);
         }
@@ -406,7 +415,9 @@ void printVars()
         if(!strcmp(var_table[i].var_type, "char"))
         {
             if(var_table[i].vec_size != 0)
-                fprintf(symbol_table,"PRINTARE VECTOR");
+						{
+							fprintf(symbol_table,"%c ", (var_table[i].vec_charval)[j]);
+						}
             else
                 fprintf(symbol_table,"%c ", var_table[i].charval);
         }
