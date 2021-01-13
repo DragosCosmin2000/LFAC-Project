@@ -1,3 +1,31 @@
+integer arr1[3];
+arr1[0] := 20;
+arr1[1] := 40;
+arr1[2] := 60;
+integer nunu := arr1;
+integer a := arr1;
+float arr2[4];
+arr2[0] := 23.3;
+arr2[1] := 231.3123;
+arr2[2] := 0.12312;
+arr2[3] := 0.5;
+char arr3[2];
+arr3[0] := 'l';
+arr3[1] := 'a';
+string arr4[3];
+arr4[0] := "buna ";
+arr4[1] := "eu ";
+arr4[2] := " sunt Alex.";
+
+if(2<3){
+  integer abc;
+  abc := 20;
+  Eval(2 + 5);
+};
+integer abc[3];
+abc[0] := 5;
+abc[1] := abc[0];
+abc[2] := 15;
 float x;
 if(2<3){
   integer x;
@@ -37,17 +65,21 @@ class Clasa {
   public:
     integer a := 2;
 };
+string amama;
+amama := "hahahaha" + "daaa";
+integer ddddddddddddda := 20;
 masini masina1 := new masini;
 for( i := 1 ; i < a ; i := i + 1 ) {
     a := 20;
     string c;
     string b := "buna";
     integer abc := "salutare" + "buna";
-    while( !( a >= function1(w,2) || a == 2 * 9) ) {
+    while( !( a >= 2 || a == 2 * 9) ) {
       float wsa;
     };
 };
-
+string xaxa1 := "x" + "y" + "z";
+const string xaxa := "SALUT";
 float funcaa(integer baawda,integer nununuu){
     integer abb := 2 + 5;
     float a:= "dadada";
@@ -56,9 +88,10 @@ float funcaa(integer baawda,integer nununuu){
     Eval( 5 + 6 + 7 ) ;
 };
 
-integer b[100];
+integer b[2];
 main(){
     integer variabila_1_da;
+    string var[20];
     x := y;
     x := x;
     integer ax := length(x);
@@ -66,5 +99,5 @@ main(){
     integer abc := xyz;
     asdf(23);
     function1(function2(4),2);
-    Eval( 5 + 6 + 7 * 5 - 12 + dadaw(2)) ;
+    Eval( 5 + 6 + 7 * 5 - 12 + ddddddddddddda + 1) ;
 end}

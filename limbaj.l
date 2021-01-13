@@ -10,6 +10,7 @@
 "char" {yylval.type = strdup(yytext); return CHAR;}
 "string" {yylval.type = strdup(yytext); return STRING;}
 "bool" {yylval.type = strdup(yytext); return BOOL;}
+"const" {yylval.type = strdup(yytext); return CONST;}
 
 "Eval" {return EVAL;}
 
@@ -47,7 +48,7 @@
 [_a-zA-Z][_a-zA-Z0-9]* {yylval.strval = strdup(yytext); return ID;}
 
 [+-]?[1-9][0-9]*|0 {yylval.intval = atoi(yytext); return NR;}
-[+-]?([1-9][0-9]*\.[0-9]+)|(0\.[0-9]+) {yylval.floatval = atoi(yytext);return NRFLOAT;}
+[+-]?([1-9][0-9]*\.[0-9]+)|(0\.[0-9]+) {yylval.floatval = atof(yytext); return NRFLOAT;}
 
 "'"[a-zA-Z]"'" {yylval.charval = yytext[1]; return CHARS;}
 \"[^"\n]*\" {yylval.strval = strdup(yytext); return STRINGS;}

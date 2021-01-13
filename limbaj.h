@@ -87,11 +87,6 @@ expr *create_other_expr(char *val)
 	return mexpr;
 }
 
-void tables_config()
-{
-   printf("Test\n");
-}
-
 void print_results()
 {
    // Delete delete the existing symbol table.
@@ -108,5 +103,5 @@ void print_results()
       printf("Unable to open %s.\n", OUTPUT_FILE);
       exit(EXIT_FAILURE);
    }
-   printf("Printare.\n");
+   fclose(symbol_table);
 }

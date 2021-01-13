@@ -2,6 +2,9 @@ integer GGG;
 integer function1(integer a,float b){
     integer GGG;
 };
+integer function10(){
+    integer GGG;
+};
 class Clasa1{
     private:
         integer GGG;
@@ -25,14 +28,39 @@ TEST(2,3 + x,4) ;
 GGG := GGG + 5 * 3 + TEST ( TEST(2,3 + x,4) + 45, 2 + x, 3) - 34 - 4 + tvect[2];
 integer a;
 a:=1;
-integer function3(integer x,float b,char b){
+integer arr1[3];
+arr1[0] := 20;
+arr1[1] := 40;
+arr1[2] := 60;
+integer nunu := arr1;
+float arr2[4];
+arr2[0] := 23.3;
+arr2[1] := 231.3123;
+arr2[2] := 0.12312;
+arr2[3] := 0.5;
+char arr3[2];
+arr3[0] := 'l';
+arr3[1] := 'a';
+string arr4[3];
+arr4[0] := "buna ";
+arr4[1] := "eu ";
+arr4[2] := " sunt Alex.";
+char funct(float x,string b,integer z){
     while(a<5){
         a:=a+ 1;
     };
 };
-
+float function2(integer baawda){
+    integer abb := 2 + 5;
+    func();
+    integer a;
+    Eval( 5 + 6 + 7 ) ;
+};
+float abc[3];
+abc[0] := 5.23;
+abc[2] := 2.5;
 class masini{
-    private: float function2(){
+    private: float function21(){
         integer b;
         b:=9;
     };
@@ -40,15 +68,19 @@ class masini{
         string k;
     
 };
-
+masini dacia := new masini;
 main(){
+    integer ba := 20;
+    integer i;
     for( i := 1 ; i < a ; i := i + 1 ) {
-    a := 20;
+    
     string c;
     string b := "buna";
-    integer abc := "salutare" + "buna";
-    while( !( a >= function3(2,2) || a == 2 * 9) ) {
+    string abc := "salutare" + "buna";
+    while( !( a >= funct(2 + 2.0,b,ba) || a == 2 * 9) ) {
       float wsa;
     };
-};
+    };
+    integer ddddddddddddda := 25;
+    Eval( 5 + 6 + 7 * 5 - 12 + ddddddddddddda + function2(ddddddddddddda)) ;
 end}

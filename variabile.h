@@ -21,6 +21,7 @@ typedef struct variable {
 
 	int *vec_intval;
 	float *vec_floatval;
+	char *vec_charval;
 	char **vec_stringval;
 	char **vec_otherval;
 
@@ -31,6 +32,159 @@ typedef struct variable {
 
 variable var_table[m];
 int nr_vars = 0;
+
+void changeIntVal(char *id, unsigned int current_depth, char *current_member, int new_val)
+{
+	for(int i = 0; i < nr_vars; i++)
+	{
+		if(!strcmp(id, var_table[i].name))
+		{
+			if(var_table[i].depth <= current_depth)
+			{
+				if(!strcmp(var_table[i].memberOf, current_member) || !strncmp(var_table[i].memberOf, current_member, strlen(var_table[i].memberOf)) || !strcmp(var_table[i].memberOf, "global"))
+					var_table[i].intval = new_val;
+			}
+		}
+	}
+}
+
+void changeArrayIntVal(char *id, unsigned int current_depth, char *current_member, int new_val, int index)
+{
+	for(int i = 0; i < nr_vars; i++)
+	{
+		if(!strcmp(id, var_table[i].name))
+		{
+			if(var_table[i].depth <= current_depth)
+			{
+				if(!strcmp(var_table[i].memberOf, current_member) || !strncmp(var_table[i].memberOf, current_member, strlen(var_table[i].memberOf)) || !strcmp(var_table[i].memberOf, "global"))
+					(var_table[i].vec_intval)[index] = new_val;
+			}
+		}
+	}
+}
+
+void changeArrayFloatVal(char *id, unsigned int current_depth, char *current_member, float new_val, int index)
+{
+	for(int i = 0; i < nr_vars; i++)
+	{
+		if(!strcmp(id, var_table[i].name))
+		{
+			if(var_table[i].depth <= current_depth)
+			{
+				if(!strcmp(var_table[i].memberOf, current_member) || !strncmp(var_table[i].memberOf, current_member, strlen(var_table[i].memberOf)) || !strcmp(var_table[i].memberOf, "global"))
+					(var_table[i].vec_floatval)[index] = new_val;
+			}
+		}
+	}
+}
+
+void changeFloatVal(char *id, unsigned int current_depth, char *current_member, float new_val)
+{
+	for(int i = 0; i < nr_vars; i++)
+	{
+		if(!strcmp(id, var_table[i].name))
+		{
+			if(var_table[i].depth <= current_depth)
+			{
+				if(!strcmp(var_table[i].memberOf, current_member) || !strncmp(var_table[i].memberOf, current_member, strlen(var_table[i].memberOf)) || !strcmp(var_table[i].memberOf, "global"))
+					var_table[i].floatval = new_val;
+			}
+		}
+	}
+}
+
+void changeArrayCharVal(char *id, unsigned int current_depth, char *current_member, char new_val, int index)
+{
+	for(int i = 0; i < nr_vars; i++)
+	{
+		if(!strcmp(id, var_table[i].name))
+		{
+			if(var_table[i].depth <= current_depth)
+			{
+				if(!strcmp(var_table[i].memberOf, current_member) || !strncmp(var_table[i].memberOf, current_member, strlen(var_table[i].memberOf)) || !strcmp(var_table[i].memberOf, "global"))
+					(var_table[i].vec_charval)[index] = new_val;
+			}
+		}
+	}
+}
+
+void changeCharVal(char *id, unsigned int current_depth, char *current_member, char new_val)
+{
+	for(int i = 0; i < nr_vars; i++)
+	{
+		if(!strcmp(id, var_table[i].name))
+		{
+			if(var_table[i].depth <= current_depth)
+			{
+				if(!strcmp(var_table[i].memberOf, current_member) || !strncmp(var_table[i].memberOf, current_member, strlen(var_table[i].memberOf)) || !strcmp(var_table[i].memberOf, "global"))
+					var_table[i].charval = new_val;
+			}
+		}
+	}
+}
+
+void changeArrayStringVal(char *id, unsigned int current_depth, char *current_member, char *new_val, int index)
+{
+	for(int i = 0; i < nr_vars; i++)
+	{
+		if(!strcmp(id, var_table[i].name))
+		{
+			if(var_table[i].depth <= current_depth)
+			{
+				if(!strcmp(var_table[i].memberOf, current_member) || !strncmp(var_table[i].memberOf, current_member, strlen(var_table[i].memberOf)) || !strcmp(var_table[i].memberOf, "global"))
+					strcpy((var_table[i].vec_stringval)[index], new_val);
+			}
+		}
+	}
+}
+
+void changeStringVal(char *id, unsigned int current_depth, char *current_member, char *new_val)
+{
+	for(int i = 0; i < nr_vars; i++)
+	{
+		if(!strcmp(id, var_table[i].name))
+		{
+			if(var_table[i].depth <= current_depth)
+			{
+				if(!strcmp(var_table[i].memberOf, current_member) || !strncmp(var_table[i].memberOf, current_member, strlen(var_table[i].memberOf)) || !strcmp(var_table[i].memberOf, "global"))
+				{
+					var_table[i].stringval = malloc(sizeof(char) * 300);
+					strcpy(var_table[i].stringval, new_val);
+				}
+			}
+		}
+	}
+}
+
+int checkConst(char *id, unsigned int current_depth, char *current_member)
+{
+	for(int i = 0; i < nr_vars; i++)
+	{
+		if(!strcmp(id, var_table[i].name))
+		{
+			if(var_table[i].depth <= current_depth)
+			{
+				if(!strcmp(var_table[i].memberOf, current_member) || !strncmp(var_table[i].memberOf, current_member, strlen(var_table[i].memberOf)) || !strcmp(var_table[i].memberOf, "global"))
+					return var_table[i].is_const;
+			}
+		}
+	}
+}
+
+int getSize(char *id, unsigned int current_depth, char *current_member)
+{
+	for(int i = 0; i < nr_vars; i++)
+	{
+		if(!strcmp(id, var_table[i].name))
+		{
+			if(var_table[i].depth <= current_depth)
+			{
+				if(!strcmp(var_table[i].memberOf, current_member) || !strncmp(var_table[i].memberOf, current_member, strlen(var_table[i].memberOf)) || !strcmp(var_table[i].memberOf, "global"))
+					return var_table[i].vec_size;
+			}
+		}
+	}
+}
 
 int checkVariableExistence(char *ID, char* type, unsigned int scope, unsigned int depth, char *current_member)
 {
@@ -50,7 +204,7 @@ int checkVariableExistence(char *ID, char* type, unsigned int scope, unsigned in
 					dif_depth = 1;
 				}
 			}
-			else if(!strncmp(var_table[i].memberOf, current_member, strlen(var_table[i].memberOf)))
+			else if(!strncmp(var_table[i].memberOf, current_member, strlen(var_table[i].memberOf)) || !strcmp(var_table[i].memberOf, "global"))
 			{
 				dif_depth = 1;
 			}
@@ -83,6 +237,24 @@ void addVariableInt(char *ID, unsigned int scope, unsigned int depth, char *curr
 	var_table[nr_vars++].memberOf = strdup(current_member);
 }
 
+void addArrayVariableInt(char *ID, unsigned int scope, unsigned int depth, char *current_member, int nr_elem)
+{
+	if(nr_vars == m - 1)
+		extend(2);
+	var_table[nr_vars].name = strdup(ID);
+	var_table[nr_vars].var_type = strdup("integer");
+	var_table[nr_vars].is_const = 0;
+	var_table[nr_vars].scope = scope;
+	var_table[nr_vars].depth = depth;
+	var_table[nr_vars].vec_size = nr_elem;
+	var_table[nr_vars].vec_intval = (int *) malloc(nr_elem * sizeof(int));
+	for(int i = 0; i < nr_elem; i++)
+	{
+		(var_table[nr_vars].vec_intval)[i] = 0;
+	}
+	var_table[nr_vars++].memberOf = strdup(current_member);
+}
+
 void addVariableFloat(char *ID, unsigned int scope, unsigned int depth, char *current_member, float val, int const_flag)
 {
 	if(nr_vars == m - 1)
@@ -93,6 +265,24 @@ void addVariableFloat(char *ID, unsigned int scope, unsigned int depth, char *cu
 	var_table[nr_vars].scope = scope;
 	var_table[nr_vars].depth = depth;
 	var_table[nr_vars].floatval = val;
+	var_table[nr_vars++].memberOf = strdup(current_member);
+}
+
+void addArrayVariableFloat(char *ID, unsigned int scope, unsigned int depth, char *current_member, int nr_elem)
+{
+	if(nr_vars == m - 1)
+		extend(2);
+	var_table[nr_vars].name = strdup(ID);
+	var_table[nr_vars].var_type = strdup("float");
+	var_table[nr_vars].is_const = 0;
+	var_table[nr_vars].scope = scope;
+	var_table[nr_vars].depth = depth;
+	var_table[nr_vars].vec_size = nr_elem;
+	var_table[nr_vars].vec_floatval = (float *) malloc(nr_elem * sizeof(float));
+	for(int i = 0; i < nr_elem; i++)
+	{
+		(var_table[nr_vars].vec_floatval)[i] = 0.0;
+	}
 	var_table[nr_vars++].memberOf = strdup(current_member);
 }
 
@@ -109,6 +299,24 @@ void addVariableChar(char *ID, unsigned int scope, unsigned int depth, char *cur
 	var_table[nr_vars++].memberOf = strdup(current_member);
 }
 
+void addArrayVariableChar(char *ID, unsigned int scope, unsigned int depth, char *current_member, int nr_elem)
+{
+	if(nr_vars == m - 1)
+		extend(2);
+	var_table[nr_vars].name = strdup(ID);
+	var_table[nr_vars].var_type = strdup("char");
+	var_table[nr_vars].is_const = 0;
+	var_table[nr_vars].scope = scope;
+	var_table[nr_vars].depth = depth;
+	var_table[nr_vars].vec_size = nr_elem;
+	var_table[nr_vars].vec_charval = (char *) malloc(nr_elem * sizeof(char));
+	for(int i = 0; i < nr_elem; i++)
+	{
+		(var_table[nr_vars].vec_charval)[i] = '\0';
+	}
+	var_table[nr_vars++].memberOf = strdup(current_member);
+}
+
 void addVariableString(char *ID, unsigned int scope, unsigned int depth, char *current_member, char *val, int const_flag)
 {
 	if(nr_vars == m - 1)
@@ -119,6 +327,25 @@ void addVariableString(char *ID, unsigned int scope, unsigned int depth, char *c
 	var_table[nr_vars].scope = scope;
 	var_table[nr_vars].depth = depth;
 	var_table[nr_vars].stringval = strdup(val);
+	var_table[nr_vars++].memberOf = strdup(current_member);
+}
+
+void addArrayVariableString(char *ID, unsigned int scope, unsigned int depth, char *current_member, int nr_elem)
+{
+	if(nr_vars == m - 1)
+		extend(2);
+	var_table[nr_vars].name = strdup(ID);
+	var_table[nr_vars].var_type = strdup("string");
+	var_table[nr_vars].is_const = 0;
+	var_table[nr_vars].scope = scope;
+	var_table[nr_vars].depth = depth;
+	var_table[nr_vars].vec_size = nr_elem;
+	var_table[nr_vars].vec_stringval = malloc(nr_elem * sizeof(char*));
+	for(int i = 0; i < nr_elem; i++)
+	{
+		var_table[nr_vars].vec_stringval[i] = malloc(300 * sizeof(char));
+		strcpy((var_table[nr_vars].vec_stringval)[i], "\0");
+	}
 	var_table[nr_vars++].memberOf = strdup(current_member);
 }
 
@@ -135,49 +362,57 @@ void addVariableOther(char *ID, unsigned int scope, unsigned int depth, char *cu
 	var_table[nr_vars++].memberOf = strdup(current_member);
 }
 
-void printVars(FILE *file)
+void printVars()
 {
-	for(int i = 0; i < nr_vars; i++)
-	{
-		printf("Nume: %s | Tip: %s | Scope: %d | Depth: %d | Member of: %s", var_table[i].name, var_table[i].var_type, var_table[i].scope, var_table[i].depth, var_table[i].memberOf);
-		if(var_table[i].is_const)
-			printf(" | CONST ");
+    int i,j;
+    FILE *symbol_table;
+    symbol_table = fopen("symbol_table.txt", "a");
+    if(!symbol_table)
+   {
+      printf("Unable to open %s.\n", OUTPUT_FILE);
+      exit(EXIT_FAILURE);
+   }
+    for(int i = 0; i < nr_vars; i++)
+    {
+        fprintf(symbol_table,"Nume: %s | Tip: %s | Scope: %d | Depth: %d | Member of: %s", var_table[i].name, var_table[i].var_type, var_table[i].scope, var_table[i].depth, var_table[i].memberOf);
+        if(var_table[i].is_const)
+            fprintf(symbol_table," | CONST ");
 
-		printf(" | VALUE: ");
-		if(!strcmp(var_table[i].var_type, "integer") || !strcmp(var_table[i].var_type, "bool"))
-		{
-			if(var_table[i].vec_size != 0)
-				printf("PRINTARE VECTOR");
-			else
-				printf("%d ", var_table[i].intval);
-		}
+        fprintf(symbol_table," | VALUE: ");
+        if(!strcmp(var_table[i].var_type, "integer") || !strcmp(var_table[i].var_type, "bool"))
+        {
+            if(var_table[i].vec_size != 0)
+                fprintf(symbol_table,"PRINTARE VECTOR");
+            else
+                fprintf(symbol_table,"%d ", var_table[i].intval);
+        }
 
-		if(!strcmp(var_table[i].var_type, "float"))
-		{
-			if(var_table[i].vec_size != 0)
-				printf("PRINTARE VECTOR");
-			else
-				printf("%f ", var_table[i].floatval);
-		}
+        if(!strcmp(var_table[i].var_type, "float"))
+        {
+            if(var_table[i].vec_size != 0)
+                fprintf(symbol_table,"PRINTARE VECTOR");
+            else
+                fprintf(symbol_table,"%f ", var_table[i].floatval);
+        }
 
-		if(!strcmp(var_table[i].var_type, "string"))
-		{
-			if(var_table[i].vec_size != 0)
-				printf("PRINTARE VECTOR");
-			else
-				printf("%s ", var_table[i].stringval);
-		}
+        if(!strcmp(var_table[i].var_type, "string"))
+        {
+            if(var_table[i].vec_size != 0)
+                fprintf(symbol_table,"PRINTARE VECTOR");
+            else
+                fprintf(symbol_table,"%s ", var_table[i].stringval);
+        }
 
-		if(!strcmp(var_table[i].var_type, "char"))
-		{
-			if(var_table[i].vec_size != 0)
-				printf("PRINTARE VECTOR");
-			else
-				printf("%c ", var_table[i].charval);
-		}
+        if(!strcmp(var_table[i].var_type, "char"))
+        {
+            if(var_table[i].vec_size != 0)
+                fprintf(symbol_table,"PRINTARE VECTOR");
+            else
+                fprintf(symbol_table,"%c ", var_table[i].charval);
+        }
 
-		printf("\n");
-	}
+        fprintf(symbol_table,"\n");
+    }
 }
 
 char *get_var_type(char *id, char *current_member, int current_depth)
@@ -189,7 +424,7 @@ char *get_var_type(char *id, char *current_member, int current_depth)
 			if(var_table[i].depth <= current_depth)
 			{
 				if(!strcmp(var_table[i].memberOf, current_member) || !strncmp(var_table[i].memberOf, current_member, strlen(var_table[i].memberOf)) || !strcmp(var_table[i].memberOf, "global"))
-					return var_table[i].var_type;
+					{return var_table[i].var_type;}
 			}
 		}
 	}
@@ -203,7 +438,7 @@ variable get_var(char *id, char *current_member, int current_depth)
 		{
 			if(var_table[i].depth <= current_depth)
 			{
-				if(!strcmp(var_table[i].memberOf, current_member) || !strncmp(var_table[i].memberOf, current_member, strlen(var_table[i].memberOf)))
+				if(!strcmp(var_table[i].memberOf, current_member) || !strncmp(var_table[i].memberOf, current_member, strlen(var_table[i].memberOf)) || !strcmp(var_table[i].memberOf, "global"))
 					return var_table[i];
 			}
 		}

@@ -1,0 +1,9 @@
+Nume: TEST | Tip: integer | Nr Parametrii: 3 | Tipul parametrii:integer integer integer | Locatie: Global function
+Nume: TEST | Tip: integer | Nr Parametrii: 2 | Tipul parametrii:bool integer | Locatie: Global function
+Nume: FTEST | Tip: float | Nr Parametrii: 1 | Tipul parametrii:integer | Locatie: Global function
+Nume: y | Tip: integer | Scope: 1 | Depth: 1 | Member of: function integer TEST ( integer a,integer b,integer c ) | VALUE: 0 
+Nume: z | Tip: integer | Scope: 1 | Depth: 1 | Member of: function integer TEST ( bool a,integer c ) | VALUE: 0 
+Nume: t | Tip: integer | Scope: 1 | Depth: 1 | Member of: function float FTEST ( integer a ) | VALUE: 0 
+Nume: x | Tip: integer | Scope: 0 | Depth: 0 | Member of: global | VALUE: 23 
+Nume: z | Tip: integer | Scope: 0 | Depth: 0 | Member of: global | VALUE: 0 
+Nume: fz | Tip: float | Scope: 0 | Depth: 0 | Member of: global | VALUE: 2.300000 

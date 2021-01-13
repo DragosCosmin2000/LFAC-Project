@@ -43,6 +43,8 @@ void pushFunc (char *type, char* name, char *param,int nr_param,int locate){
     {
       takeParameters(param,functions[nr_functions++].parameters);
     }
+    else
+        strcpy(functions[nr_functions++].parameters[0],"nu sunt parametrii");
 }
 int cFunc(char *type, char* name, char *param,int nr_param,int locate){
     int i;
@@ -82,20 +84,28 @@ int checkParametrii2(char* name,char* param,int nr_param){
     char *aux;
     int k=0,i;
     for(i=0;i<nr_functions;i++){
-        if(strcmp(functions[i].nameFunction,name)==0 && nr_param==functions[i].numberParameters){
-            char *aux;
-            aux = strtok( param, " " );
+        while(strcmp(functions[i].nameFunction,name)==0  && i<nr_functions){
+            char *aux,param_aux[50];
+            strcpy(param_aux,param);
+            aux = strtok( param_aux, " " );
             k=0;
+            int ok=1;
             while(aux){
-                if(strcmp(functions[i].parameters[k],aux)!=0)
-                    return 0;
+                if(strcmp(functions[i].parameters[k],aux)!=0){
+                    ok=0;
+                    break;
+                }
                 k++;
                 aux=strtok(NULL," ");
             }
-            return 1;
+            i++;
+            if(ok==1)
+                return 1;
+            else return 0;
+        }
+        if(k!=0)i--;
     }
-    }
-    return 2;
+    return 0;
 }
 int cClas(char *name){
     int i;
@@ -131,23 +141,40 @@ int cObj(char *name){
 }
 void printFunctii(){
     int i;
+    FILE *symbol_table;
+    symbol_table = fopen("symbol_table.txt", "a");
+    if(!symbol_table)
+   {
+      printf("Unable to open %s.\n", OUTPUT_FILE);
+      exit(EXIT_FAILURE);
+   }
     for(i=0;i<nr_functions;i++){
-        printf("Tip: %s | Nume: %s | Nr Parametrii: %d | Tipul parametrii:",functions[i].typeFunction,functions[i].nameFunction,functions[i].numberParameters);
-        for(int j=0;j<functions[i].numberParameters;j++)
-            printf("%s ",functions[i].parameters[j]);
+        fprintf(symbol_table,"Nume: %s | Tip: %s | Nr Parametrii: %d | Tipul parametrii:",functions[i].nameFunction,functions[i].typeFunction,functions[i].numberParameters);
+        if(functions[i].numberParameters !=0)
+            for(int j=0;j<functions[i].numberParameters;j++)
+                fprintf(symbol_table,"%s ",functions[i].parameters[j]);
         if(functions[i].locatie==1)
-            printf("| Locatie: Inside a class");
+            fprintf(symbol_table,"| Locatie: Inside a class");
         else
-            printf("| Locatie: Global function");
-        printf("\n");
+            fprintf(symbol_table,"| Locatie: Global function");
+        fprintf(symbol_table,"\n");
     }
+    fclose(symbol_table);
 }
 void printClase(){
     int i,j;
+    FILE *symbol_table;
+    symbol_table = fopen("symbol_table.txt", "a");
+    if(!symbol_table)
+   {
+      printf("Unable to open %s.\n", OUTPUT_FILE);
+      exit(EXIT_FAILURE);
+   }
     for(i=0;i<nr_classes;i++){
-        printf("Clasa: %s cu obiectele: ",clase[i].className);
+        fprintf(symbol_table,"Clasa: %s cu obiectele: ",clase[i].className);
         for(j=0;j<clase[i].nr_objects;j++)
-            printf("%s ",clase[i].objects[j]);
-        printf("\n");
+            fprintf(symbol_table,"%s ",clase[i].objects[j]);
+        fprintf(symbol_table,"\n");
     }
+    fclose(symbol_table);
 }
