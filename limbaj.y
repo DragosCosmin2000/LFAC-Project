@@ -49,7 +49,7 @@ void yyerror(const char* error_message);
 
 %start progr
 %%
-progr : declaratii bloc {printf("Corect.\n");}
+progr : declaratii bloc {if(program_status==1) printf("Corect.\n");}
       ;
 
 declaratii : declaratie ';'

@@ -1507,7 +1507,7 @@ yyreduce:
     {
         case 2:
 #line 52 "limbaj.y" /* yacc.c:1646  */
-    {printf("Corect.\n");}
+    {if(program_status==1) printf("Corect.\n");}
 #line 1512 "y.tab.c" /* yacc.c:1646  */
     break;
 
